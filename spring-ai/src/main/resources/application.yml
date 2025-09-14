@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: spring-ai
+  main:
+    # Keep reactive/web server disabled when acting purely as MCP over stdio.
+    web-application-type: none
+    banner-mode: off
+
+# Example custom properties for downstream service access (kept from original snippet)
+oms:
+  base-url: http://localhost:8090
+
+server:
+  port: 8091
+
+# Custom (non-standard) section to indicate MCP configuration. If the spring-ai mcp starter
+# expects different property names, adjust accordingly or rely purely on CLI args.
+mcp:
+  transport: stdio
+
+logging:
+  level:
+    org.springframework.ai.mcp: DEBUG
