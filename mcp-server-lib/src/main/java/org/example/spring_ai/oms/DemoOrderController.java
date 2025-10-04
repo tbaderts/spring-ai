@@ -3,18 +3,25 @@ package org.example.spring_ai.oms;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Simple web controller to exercise {@link OrderQueryClient} with static
- * parameters.
- * Hitting GET /api/demo/orders will call the OMS query endpoint using a handful
- * of
- * hard-coded query values just to verify wiring and serialization.
+ * Demo controller for quick local testing of the {@link OrderQueryClient}.
+ *
+ * Exposes a single endpoint:
+ *   GET /api/demo/orders
+ *
+ * Behavior:
+ * - Calls {@code OrderQueryClient.search(...)} with simple, hard-coded filters.
+ * - Returns the parsed {@code PageResponse} for fast verification.
+ *
+ * Quick test (PowerShell):
+ *   Invoke-RestMethod -Uri 'http://localhost:8080/api/demo/orders' -Method GET
+ *
+ * Adjust the filters in {@link #demoOrders()} when iterating during development.
  */
 @RestController
 @RequestMapping("/api/demo")
@@ -26,17 +33,15 @@ public class DemoOrderController {
         this.orderQueryClient = orderQueryClient;
     }
 
-    /**
-     * Invoke the OrderQueryClient with static params.
-     * Adjust the hard-coded map as needed while developing.
-     */
+    /** Invoke the {@link OrderQueryClient} with static params. Modify the
+     *  hard-coded filters in-place while developing. */
     @GetMapping("/orders")
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ResponseEntity<PagedModel<Map<String, Object>>> demoOrders() {
+    public ResponseEntity<PageResponse<Map<String, Object>>> demoOrders() {
         Map<String, Object> filters = new HashMap<>();
         // Example static filters (modify to match actual server-side fields if needed)
 
-        PagedModel result = orderQueryClient.search(filters, 0, 5, "id,DESC");
+        PageResponse result = orderQueryClient.search(filters, 0, 5, "id,DESC");
         return ResponseEntity.ok(result);
     }
 }

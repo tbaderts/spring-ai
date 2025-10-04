@@ -1,8 +1,6 @@
 package org.example.spring_ai.oms;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +12,6 @@ import org.example.common.model.query.State; // Spring AI tool annotation
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -50,45 +46,17 @@ public class OrderSearchMcpTools {
         log.info("[MCP] searchOrders called with filters={}, page={}, size={}, sort={}",
             filters, page, size, sort);
         Map<String,Object> queryParams = buildQueryParams(filters);
-        PagedModel<Map<String, Object>> paged = orderQueryClient.search(queryParams, page, size, sort);
+        PageResponse<Map<String, Object>> paged = orderQueryClient.search(queryParams, page, size, sort);
         log.info("Received paged response: {}", paged);
 
-        PagedModel.PageMetadata md = paged.getMetadata();
+        // Content is already a list of maps
+        List<Map<String, Object>> content = new ArrayList<>(paged.getContent());
 
-        // Content might be simple maps or wrapped in EntityModel depending on server response.
-        List<Map<String, Object>> content = new ArrayList<>();
-        Collection<?> raw = paged.getContent();
-        for (Object o : raw) {
-            if (o instanceof Map<?,?> map) {
-                Map<String,Object> copy = new HashMap<>();
-                for (Map.Entry<?,?> e : map.entrySet()) {
-                    copy.put(e.getKey().toString(), e.getValue());
-                }
-                content.add(copy);
-            } else if (o instanceof EntityModel<?> em) {
-                Object inner = em.getContent();
-                if (inner instanceof Map<?,?> map) {
-                    Map<String,Object> copy = new HashMap<>();
-                    for (Map.Entry<?,?> e : map.entrySet()) {
-                        copy.put(e.getKey().toString(), e.getValue());
-                    }
-                    content.add(copy);
-                } else if (inner != null) {
-                    Map<String,Object> single = new HashMap<>();
-                    single.put("value", inner);
-                    content.add(single);
-                }
-            } else if (o != null) {
-                Map<String,Object> single = new HashMap<>();
-                single.put("value", o);
-                content.add(single);
-            }
-        }
-
-        return new OrderSearchResponse(md != null ? (int) md.getNumber() : 0,
-            md != null ? (int) md.getSize() : content.size(),
-            md != null ? md.getTotalElements() : content.size(),
-            md != null ? md.getTotalPages() : 1,
+        return new OrderSearchResponse(
+            paged.getPageNumber(),
+            paged.getPageSize(),
+            paged.getTotalElements(),
+            paged.getTotalPages(),
             content);
     }
 

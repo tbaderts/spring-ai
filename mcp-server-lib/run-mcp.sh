@@ -30,6 +30,6 @@ fi
 MCP_TRANSPORT_PROP="--mcp.transport=${MCP_TRANSPORT:-stdio}"
 
 exec java ${JAVA_OPTS:-} -jar "$JAR_FILE" \
-  ${SPRING_PROFILES:+--spring.profiles.active=${SPRING_PROFILES}} \
+  ${SPRING_PROFILES_ACTIVE:+--spring.profiles.active=${SPRING_PROFILES_ACTIVE}} \
   --spring.main.banner-mode=off \
   ${MCP_TRANSPORT_PROP} "$@"
