@@ -1,0 +1,10 @@
+{
+	"servers": {
+		"oms": {
+			"type": "stdio",
+			"command": "/home/tbaderts/data/workspace/mcp-server-lib/run-mcp.sh",
+			"args": []
+		}
+	},
+	"inputs": []
+}

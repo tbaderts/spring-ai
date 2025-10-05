@@ -1,0 +1,203 @@
+08:22:31.275 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+08:22:31.329 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.3 with PID 47976 (C:\data\workspace\spring-ai\mcp-server-lib\build\libs\mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbade in C:\data\workspace\spring-ai\mcp-server-lib)
+08:22:31.329 INFO  org.example.spring_ai.SpringAiApplication - The following 1 profile is active: "mcp"
+08:22:32.695 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+08:22:32.763 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 1
+08:22:32.764 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+08:22:32.764 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+08:22:32.764 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+08:22:32.862 INFO  io.modelcontextprotocol.server.McpAsyncServer - Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=Visual Studio Code, version=1.104.3]
+08:22:32.868 WARN  io.modelcontextprotocol.server.McpAsyncServer - Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+08:22:32.930 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 2.236 seconds (process running for 2.817)
+08:23:02.773 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=BUY, ordType=null, state=null, cancelState=null], page=0, size=20, sort=transactTime,desc
+08:23:02.794 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?side=BUY&page=0&sort=transactTime,desc&size=20
+08:23:02.816 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?side=BUY&page=0&sort=transactTime,desc&size=20
+08:23:02.895 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+08:23:02.901 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6PVA884EMR9C4ZC4FTSWKBH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6PVAFZ3JPXZH6TJK6N4P8GR","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":20,"number":0,"totalElements":2,"totalPages":1}}
+08:23:02.904 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=20, totalElements=2, totalPages=1, contentSize=2}
+08:49:43.727 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=BUY, ordType=null, state=null, cancelState=null], page=0, size=5, sort=id,DESC
+08:49:43.727 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?side=BUY&page=0&sort=id,DESC&size=5
+08:49:43.727 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?side=BUY&page=0&sort=id,DESC&size=5
+08:49:43.752 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+08:49:43.753 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6PVAFZ3JPXZH6TJK6N4P8GR","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6PVA884EMR9C4ZC4FTSWKBH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":5,"number":0,"totalElements":2,"totalPages":1}}
+08:49:43.753 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=5, totalElements=2, totalPages=1, contentSize=2}
+08:50:28.515 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=BUY, ordType=null, state=null, cancelState=null], page=0, size=20, sort=transactTime,desc
+08:50:28.516 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?side=BUY&page=0&sort=transactTime,desc&size=20
+08:50:28.516 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?side=BUY&page=0&sort=transactTime,desc&size=20
+08:50:28.540 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+08:50:28.540 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6PVA884EMR9C4ZC4FTSWKBH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6PVAFZ3JPXZH6TJK6N4P8GR","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":20,"number":0,"totalElements":2,"totalPages":1}}
+08:50:28.541 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=20, totalElements=2, totalPages=1, contentSize=2}
+08:52:37.285 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=20,30, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=BUY, ordType=LIMIT, state=null, cancelState=null], page=0, size=50, sort=transactTime,desc
+08:52:37.285 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?side=BUY&page=0&sort=transactTime,desc&price__between=20,30&size=50&ordType=LIMIT
+08:52:37.285 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?side=BUY&page=0&sort=transactTime,desc&price__between=20,30&size=50&ordType=LIMIT
+08:52:37.319 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+08:52:37.319 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6PVA884EMR9C4ZC4FTSWKBH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6PVAFZ3JPXZH6TJK6N4P8GR","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":50,"number":0,"totalElements":2,"totalPages":1}}
+08:52:37.320 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=50, totalElements=2, totalPages=1, contentSize=2}
+14:56:40.447 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+14:56:40.478 INFO  org.example.spring_ai.SpringAiApplicationTests - Starting SpringAiApplicationTests using Java 21.0.8 with PID 41827 (started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+14:56:40.479 INFO  org.example.spring_ai.SpringAiApplicationTests - No active profile set, falling back to 1 default profile: "default"
+14:56:40.939 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[]
+14:56:41.274 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+14:56:41.317 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 5
+14:56:41.318 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+14:56:41.318 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+14:56:41.319 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+14:56:41.404 INFO  org.example.spring_ai.SpringAiApplicationTests - Started SpringAiApplicationTests in 1.19 seconds (process running for 1.928)
+18:58:41.799 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+18:58:41.829 INFO  org.example.spring_ai.SpringAiApplicationTests - Starting SpringAiApplicationTests using Java 21.0.8 with PID 267495 (started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+18:58:41.829 INFO  org.example.spring_ai.SpringAiApplicationTests - No active profile set, falling back to 1 default profile: "default"
+18:58:42.208 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[]
+18:58:42.526 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+18:58:42.565 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 5
+18:58:42.566 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+18:58:42.566 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+18:58:42.566 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+18:58:42.647 INFO  org.example.spring_ai.SpringAiApplicationTests - Started SpringAiApplicationTests in 1.07 seconds (process running for 1.721)
+19:08:32.509 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:08:32.540 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 280839 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:08:32.540 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+19:08:33.028 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[]
+19:08:33.393 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:08:33.440 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 5
+19:08:33.440 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:08:33.441 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:08:33.441 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:08:33.545 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 1.441 seconds (process running for 1.749)
+19:14:28.907 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:14:28.939 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 287701 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:14:28.940 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+19:14:29.467 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[]
+19:14:29.904 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:14:29.959 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 5
+19:14:29.959 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:14:29.960 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:14:29.960 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:14:30.054 INFO  io.modelcontextprotocol.server.McpAsyncServer - Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=Visual Studio Code, version=1.104.3]
+19:14:30.059 WARN  io.modelcontextprotocol.server.McpAsyncServer - Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+19:14:30.099 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 1.614 seconds (process running for 1.949)
+19:15:32.394 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=null
+19:15:32.398 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders
+19:15:32.418 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders
+19:15:32.679 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+19:15:32.688 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6R2Z11GSGYGHASGRQVCKSPX","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":300.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2Y0172CPJR4KK3JQS1SPH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2XN45XYJ3F4P8D4HXDHH1","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":50,"number":0,"totalElements":3,"totalPages":1}}
+19:15:32.692 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=50, totalElements=3, totalPages=1, contentSize=3}
+19:29:46.844 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:29:46.880 INFO  org.example.spring_ai.SpringAiApplicationTests - Starting SpringAiApplicationTests using Java 21.0.8 with PID 305955 (started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:29:46.881 INFO  org.example.spring_ai.SpringAiApplicationTests - No active profile set, falling back to 1 default profile: "default"
+19:29:47.318 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[]
+19:29:47.663 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:29:47.707 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
+19:29:47.708 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:29:47.708 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:29:47.708 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:29:47.796 INFO  org.example.spring_ai.SpringAiApplicationTests - Started SpringAiApplicationTests in 1.238 seconds (process running for 1.915)
+19:30:12.149 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:30:12.181 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 306521 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:30:12.182 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+19:30:12.710 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[]
+19:30:13.126 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:30:13.179 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
+19:30:13.179 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:30:13.180 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:30:13.181 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:30:13.262 INFO  io.modelcontextprotocol.server.McpAsyncServer - Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=Visual Studio Code, version=1.104.3]
+19:30:13.265 WARN  io.modelcontextprotocol.server.McpAsyncServer - Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+19:30:13.294 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 1.571 seconds (process running for 1.933)
+19:32:21.750 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:32:21.783 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 309192 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:32:21.784 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+19:32:22.319 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[/home/tbaderts/data/workspace/oms/specs]
+19:32:22.728 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:32:22.782 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
+19:32:22.783 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:32:22.783 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:32:22.784 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:32:37.232 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:32:37.263 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 309779 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:32:37.263 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+19:32:37.765 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[/home/tbaderts/data/workspace/oms/specs]
+19:32:38.197 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:32:38.259 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
+19:32:38.259 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:32:38.259 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:32:38.260 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:32:38.338 ERROR io.modelcontextprotocol.server.transport.StdioServerTransportProvider - Error reading from stdin
+java.io.IOException: Bad file descriptor
+	at java.base/java.io.FileInputStream.readBytes(Native Method)
+	at java.base/java.io.FileInputStream.read(FileInputStream.java:287)
+	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:345)
+	at java.base/java.io.BufferedInputStream.implRead(BufferedInputStream.java:420)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:399)
+	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:350)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:393)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at io.modelcontextprotocol.server.transport.StdioServerTransportProvider$StdioMcpSessionTransport.lambda$startInboundProcessing$4(StdioServerTransportProvider.java:209)
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:68)
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:28)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+19:32:38.382 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 1.636 seconds (process running for 1.993)
+19:37:46.458 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:37:46.491 INFO  org.example.spring_ai.SpringAiApplicationTests - Starting SpringAiApplicationTests using Java 21.0.8 with PID 316500 (started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:37:46.491 INFO  org.example.spring_ai.SpringAiApplicationTests - No active profile set, falling back to 1 default profile: "default"
+19:37:46.970 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[/home/tbaderts/data/workspace/oms/specs]
+19:37:47.356 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:37:47.410 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
+19:37:47.410 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:37:47.411 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:37:47.411 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:37:47.511 INFO  org.example.spring_ai.SpringAiApplicationTests - Started SpringAiApplicationTests in 1.307 seconds (process running for 2.0)
+19:38:22.590 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+19:38:22.625 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 317221 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
+19:38:22.625 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
+19:38:23.161 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[/home/tbaderts/data/workspace/oms/specs]
+19:38:23.587 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+19:38:23.637 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
+19:38:23.637 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+19:38:23.637 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+19:38:23.638 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+19:38:23.718 INFO  io.modelcontextprotocol.server.McpAsyncServer - Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=Visual Studio Code, version=1.104.3]
+19:38:23.722 WARN  io.modelcontextprotocol.server.McpAsyncServer - Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+19:38:23.748 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 1.588 seconds (process running for 1.911)
+20:14:58.592 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=transactionTime:asc
+20:14:58.596 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?sort=transactionTime:asc
+20:14:58.619 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?sort=transactionTime:asc
+20:14:58.751 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 500 INTERNAL_SERVER_ERROR Internal Server Error
+20:15:11.677 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=transactionTime:asc
+20:15:11.677 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?sort=transactionTime:asc
+20:15:11.678 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?sort=transactionTime:asc
+20:15:11.696 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 500 INTERNAL_SERVER_ERROR Internal Server Error
+20:15:17.470 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=null
+20:15:17.470 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders
+20:15:17.471 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders
+20:15:17.490 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+20:15:17.493 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6R2Z11GSGYGHASGRQVCKSPX","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":300.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2Y0172CPJR4KK3JQS1SPH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2XN45XYJ3F4P8D4HXDHH1","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":50,"number":0,"totalElements":3,"totalPages":1}}
+20:15:17.496 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=50, totalElements=3, totalPages=1, contentSize=3}
+20:15:23.414 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=transactTime:asc
+20:15:23.415 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?sort=transactTime:asc
+20:15:23.415 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?sort=transactTime:asc
+20:15:23.431 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 500 INTERNAL_SERVER_ERROR Internal Server Error
+20:15:27.410 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=null
+20:15:27.410 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders
+20:15:27.410 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders
+20:15:27.427 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+20:15:27.428 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6R2Z11GSGYGHASGRQVCKSPX","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":300.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2Y0172CPJR4KK3JQS1SPH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2XN45XYJ3F4P8D4HXDHH1","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":50,"number":0,"totalElements":3,"totalPages":1}}
+20:15:27.429 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=50, totalElements=3, totalPages=1, contentSize=3}
+20:16:23.081 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=orderQty:asc
+20:16:23.081 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?sort=orderQty:asc
+20:16:23.081 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?sort=orderQty:asc
+20:16:23.094 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 500 INTERNAL_SERVER_ERROR Internal Server Error
+20:16:25.212 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=null
+20:16:25.212 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders
+20:16:25.212 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders
+20:16:25.229 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
+20:16:25.230 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6R2Z11GSGYGHASGRQVCKSPX","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":300.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2Y0172CPJR4KK3JQS1SPH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2XN45XYJ3F4P8D4HXDHH1","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":50,"number":0,"totalElements":3,"totalPages":1}}
+20:16:25.232 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=50, totalElements=3, totalPages=1, contentSize=3}

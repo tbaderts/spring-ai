@@ -18,6 +18,11 @@ server:
 mcp:
   transport: stdio
 
+# Domain documentation paths (comma-separated)
+domain:
+  docs:
+    paths: /home/tbaderts/data/workspace/oms/specs
+
 logging:
   level:
     org.springframework.ai.mcp: DEBUG

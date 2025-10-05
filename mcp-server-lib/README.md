@@ -1,6 +1,16 @@
 # Spring AI MCP Server Library
 
-A **Model Context Protocol (MCP)** server built with Spring Boot and Spring AI, exposing OMS (Order Management System) query capabilities as MCP tools for AI assistants and clients.
+A **Model Context Protocol (MCP)** server bu### Key Classes
+
+| Class | Purpose |
+|-------|---------|
+| `SpringAiApplication` | Main Spring Boot application entry point |
+| `OrderSearchMcpTools` | MCP tool provider with `@Tool` annotated methods |
+| `DomainDocsTools` | Knowledge server tools for accessing OMS specs |
+| `OrderQueryClient` | REST client for OMS API calls with logging |
+| `DemoOrderController` | Optional REST endpoint for local testing |
+| `McpConfig` | Explicit ToolCallbackProvider bean configuration |
+| `HealthTools` | Simple ping/pong tool for connectivity testing |pring Boot and Spring AI, exposing OMS (Order Management System) query capabilities as MCP tools for AI assistants and clients.
 
 ---
 
@@ -12,10 +22,12 @@ A **Model Context Protocol (MCP)** server built with Spring Boot and Spring AI, 
 4. [Quick Start](#quick-start)
 5. [Configuration](#configuration)
 6. [Available Tools](#available-tools)
-7. [Client Integration](#client-integration)
-8. [Development](#development)
-9. [Logging & Debugging](#logging--debugging)
-10. [Troubleshooting](#troubleshooting)
+7. [Domain Knowledge Server](#domain-knowledge-server)
+8. [Client Integration](#client-integration)
+9. [Development](#development)
+10. [Logging & Debugging](#logging--debugging)
+11. [Troubleshooting](#troubleshooting)
+12. [Documentation](#documentation)
 
 ---
 
@@ -24,12 +36,15 @@ A **Model Context Protocol (MCP)** server built with Spring Boot and Spring AI, 
 This project implements an **MCP server** that:
 - Runs over **stdio** (standard input/output) for seamless integration with MCP clients (e.g., VS Code, Claude Desktop)
 - Exposes **OMS order search** functionality via the `searchOrders` tool
+- Provides **domain knowledge access** through 6 specialized tools for reading and searching OMS specifications
 - Uses **Spring AI's MCP server autoconfiguration** for automatic tool discovery
 - Supports **typed filters, pagination, and sorting** for flexible order queries
 - Provides a **REST client** (`OrderQueryClient`) that handles multiple response formats (Spring Data REST, HAL, plain JSON arrays)
 
 **Key Features:**
 - Zero-boilerplate tool registration using Spring AI `@Tool` annotations
+- **Domain knowledge server** making OMS specs accessible to AI assistants
+- **Section-level navigation** for precise spec access
 - Lombok-based logging with detailed request/response tracing
 - OpenAPI-generated models for type-safe filter definitions
 - Dual-mode operation: MCP server (stdio) and optional REST API demo endpoint
@@ -286,6 +301,117 @@ public String ping()
 "pong"
 ```
 
+### 3. Domain Knowledge Tools
+
+The server exposes **6 additional tools** for accessing OMS specifications and domain knowledge. These tools enable AI assistants like GitHub Copilot to read and search your documentation.
+
+| Tool | Description |
+|------|-------------|
+| `listDomainDocs` | List all available spec documents with metadata |
+| `readDomainDoc` | Read full document content with pagination support |
+| `searchDomainDocs` | Keyword search across all documents |
+| `listDocSections` | Get document outline (table of contents) |
+| `readDocSection` | Read specific section by title |
+| `searchDocSections` | Search within document sections for precision |
+
+**See [Domain Knowledge Server](#domain-knowledge-server) for details.**
+
+---
+
+## Domain Knowledge Server
+
+The MCP server includes a **knowledge server** that makes your OMS specifications accessible to AI assistants, enabling spec-driven development workflows.
+
+### What It Does
+
+- **Indexes OMS specs** from `oms/specs/` directory
+- **Exposes 6 MCP tools** for discovery, reading, and searching
+- **Enables GitHub Copilot** to use specs when generating code, tests, and documentation
+- **Provides section-level navigation** for large specification documents
+
+### Indexed Specifications
+
+The server automatically indexes these documents:
+
+- `oms_spec.md` - Main OMS State Store specification (10 KB)
+- `domain-model_spec.md` - Domain model organization & libraries (4.4 KB)
+- `state-query-store_spec.md` - State store design details (10.7 KB)
+- `streaming_spec.md` - Streaming architecture (13.8 KB)
+- `software-architecture-methodology_spec.md` - Development methodology (10.1 KB)
+- `manifesto.md` - Team manifesto and core values (7.4 KB)
+- `skill_profiles.md` - Skill profiles (10.9 KB)
+- `oms_future_considerations.md` - Future enhancements (18.3 KB)
+- `todo.txt` - TODO items (311 B)
+
+### Configuration
+
+**Default location:** `/home/tbaderts/data/workspace/oms/specs`
+
+To change or add spec directories, update `application.yml`:
+
+```yaml
+domain:
+  docs:
+    paths: /home/tbaderts/data/workspace/oms/specs,/path/to/more/specs
+```
+
+### Using with GitHub Copilot
+
+Once configured, you can ask Copilot to use your specs:
+
+```
+@workspace Search specs for "state machine" and explain what you find
+
+@workspace Using the OMS spec, create the Order entity class with spec references
+
+@workspace Generate tests for Order state transitions based on the State Machine spec
+
+@workspace Compare OrderService.java against the CQRS architecture from the spec
+```
+
+### Example Tool Calls
+
+**List all specs:**
+```javascript
+listDomainDocs()
+// Returns: Array of {path, name, size, lastModified}
+```
+
+**Read a section:**
+```javascript
+readDocSection({
+  path: "specs/oms_spec.md",
+  sectionTitle: "Domain Model"
+})
+// Returns: Just that section and its subsections
+```
+
+**Search for concepts:**
+```javascript
+searchDocSections({
+  query: "validation rules",
+  topK: 5
+})
+// Returns: Top 5 matching sections with context
+```
+
+### Benefits
+
+- ✅ **Spec-driven development** - Code follows specifications by default
+- ✅ **Faster onboarding** - New developers can query specs via AI
+- ✅ **Consistent codebase** - All code follows same spec patterns
+- ✅ **Better code reviews** - Validate against specs automatically
+- ✅ **Living documentation** - Specs actively used in development
+
+### Learn More
+
+See the comprehensive documentation in [`docs/`](docs/):
+
+- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Get started in 5 minutes
+- **[Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md)** - Complete usage guide
+- **[Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md)** - 50+ ready-to-use prompts
+- **[MCP Setup](docs/MCP.md)** - Configuration and troubleshooting
+
 ---
 
 ## Client Integration
@@ -375,9 +501,22 @@ console.log(result.content);
 
 ```
 mcp-server-lib/
+├── docs/                                  # Comprehensive documentation
+│   ├── README.md                          # Documentation index
+│   ├── QUICK_START_GUIDE.md               # 5-minute getting started
+│   ├── COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md  # Complete usage guide
+│   ├── COPILOT_PROMPTS_LIBRARY.md         # 50+ ready-to-use prompts
+│   ├── SPEC_DRIVEN_DEMO.md                # Real working examples
+│   ├── QUICK_REFERENCE.md                 # MCP tools cheat sheet
+│   ├── MCP.md                             # MCP setup and configuration
+│   ├── SECTION_NAVIGATION_DEMO.md         # Section navigation guide
+│   ├── IMPROVEMENTS_SUMMARY.md            # Technical details
+│   └── INTEGRATION_COMPLETE.md            # Setup summary
 ├── src/main/java/org/example/
 │   ├── spring_ai/
 │   │   ├── SpringAiApplication.java       # Main entry point
+│   │   ├── docs/
+│   │   │   └── DomainDocsTools.java       # Knowledge server tools
 │   │   ├── oms/
 │   │   │   ├── OrderSearchMcpTools.java   # MCP tool provider
 │   │   │   ├── OrderQueryClient.java      # REST client with logging
@@ -560,6 +699,69 @@ java -version  # Should be 21+
     ...
 </appender>
 ```
+
+---
+
+## Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/) directory.
+
+### 📚 Complete Documentation Index
+
+**[Browse all documentation →](docs/README.md)**
+
+### Quick Links by Topic
+
+#### Getting Started
+- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** ⭐ - Get started in 5 minutes
+- **[Integration Complete](docs/INTEGRATION_COMPLETE.md)** - Overview of the complete setup
+
+#### Configuration & Setup
+- **[MCP Setup Guide](docs/MCP.md)** - Wire to GitHub Copilot and Claude Desktop
+
+#### Using the Knowledge Server
+- **[Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md)** - Make Copilot use OMS specs
+- **[Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md)** - 50+ copy-paste ready prompts
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - MCP tools cheat sheet
+
+#### Examples & Tutorials
+- **[Spec-Driven Development Demo](docs/SPEC_DRIVEN_DEMO.md)** - Real working example
+- **[Section Navigation Demo](docs/SECTION_NAVIGATION_DEMO.md)** - Navigate large specs efficiently
+
+#### Technical Details
+- **[Improvements Summary](docs/IMPROVEMENTS_SUMMARY.md)** - Section navigation features
+
+### 🎯 Common Tasks
+
+| I want to... | See this document |
+|--------------|-------------------|
+| Get started quickly | [Quick Start Guide](docs/QUICK_START_GUIDE.md) |
+| Configure MCP for my IDE | [MCP Setup](docs/MCP.md) |
+| Use Copilot with specs | [Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md) |
+| Find ready-to-use prompts | [Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md) |
+| See a real example | [Spec-Driven Demo](docs/SPEC_DRIVEN_DEMO.md) |
+| Look up MCP tool syntax | [Quick Reference](docs/QUICK_REFERENCE.md) |
+
+### 💡 The Pattern for Spec-Driven Development
+
+Every time you code with Copilot:
+
+1. **Ask Copilot to read specs first:**
+   ```
+   @workspace Search specs for "[YOUR TOPIC]"
+   ```
+
+2. **Then generate/analyze code:**
+   ```
+   @workspace Based on the spec, generate [CODE]
+   ```
+
+3. **Always validate:**
+   ```
+   @workspace Does this match spec requirements?
+   ```
+
+See the [Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md) for complete details and examples.
 
 ---
 
