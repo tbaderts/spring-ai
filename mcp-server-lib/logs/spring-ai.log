@@ -1,43 +1,92 @@
-07:20:51.017 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=null, page=null, size=null, sort=null
-07:20:51.018 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders
-07:20:51.019 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders
-07:20:51.034 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
-07:20:51.035 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6R2Z11GSGYGHASGRQVCKSPX","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":300.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2Y0172CPJR4KK3JQS1SPH","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":200.00,"transactTime":"2025-10-04T10:01:00"},{"orderId":"01K6R2XN45XYJ3F4P8D4HXDHH1","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":22.35,"orderQty":100.00,"transactTime":"2025-10-04T10:01:00"}],"page":{"size":50,"number":0,"totalElements":3,"totalPages":1}}
-07:20:51.036 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=50, totalElements=3, totalPages=1, contentSize=3}
-07:52:09.870 INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
-07:52:09.905 INFO  org.example.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 21.0.8 with PID 457523 (/home/tbaderts/data/workspace/mcp-server-lib/build/libs/mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbaderts in /home/tbaderts/data/workspace/mcp-server-lib)
-07:52:09.905 INFO  org.example.spring_ai.SpringAiApplication - No active profile set, falling back to 1 default profile: "default"
-07:52:10.452 INFO  org.example.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[/home/tbaderts/data/workspace/oms/specs]
-07:52:10.860 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
-07:52:10.914 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Registered tools: 8
-07:52:10.914 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
-07:52:10.915 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
-07:52:10.915 INFO  org.springframework.ai.mcp.server.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
-07:52:10.992 INFO  io.modelcontextprotocol.server.McpAsyncServer - Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=Visual Studio Code, version=1.104.3]
-07:52:10.995 WARN  io.modelcontextprotocol.server.McpAsyncServer - Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
-07:52:11.024 INFO  org.example.spring_ai.SpringAiApplication - Started SpringAiApplication in 1.615 seconds (process running for 1.953)
-07:52:11.049 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=SELL, ordType=null, state=null, cancelState=null], page=0, size=100, sort=transactTime desc
-07:52:14.621 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=SELL, ordType=null, state=null, cancelState=null], page=0, size=100, sort=transactTime,desc
-07:52:14.622 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?side=SELL&page=0&sort=transactTime,desc&size=100
-07:52:14.639 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?side=SELL&page=0&sort=transactTime,desc&size=100
-07:52:14.818 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
-07:52:14.823 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6SET019TTAQXYRP825KKMM5","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":34.15,"orderQty":400.00,"transactTime":"2025-10-05T10:01:00"}],"page":{"size":100,"number":0,"totalElements":1,"totalPages":1}}
-07:52:14.825 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=100, totalElements=1, totalPages=1, contentSize=1}
-07:53:35.348 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=null, ordType=LIMIT, state=null, cancelState=null], page=0, size=100, sort=transactTime,desc
-07:53:35.349 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?page=0&sort=transactTime,desc&size=100&ordType=LIMIT
-07:53:35.349 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?page=0&sort=transactTime,desc&size=100&ordType=LIMIT
-07:53:35.365 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
-07:53:35.366 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6SEQ9E4CN9CJM391XGEYM3K","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":36.83,"orderQty":100.00,"transactTime":"2025-10-05T10:01:00"},{"orderId":"01K6SESF2FRVXTJMFSM9MQ0J83","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":33.25,"orderQty":200.00,"transactTime":"2025-10-05T10:01:00"},{"orderId":"01K6SET019TTAQXYRP825KKMM5","symbol":"INTC","side":"SELL","state":"UNACK","ordType":"LIMIT","price":34.15,"orderQty":400.00,"transactTime":"2025-10-05T10:01:00"}],"page":{"size":100,"number":0,"totalElements":3,"totalPages":1}}
-07:53:35.367 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=100, totalElements=3, totalPages=1, contentSize=3}
-07:54:40.178 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=null, transactTimeBetween=null, expireTimeBetween=null, side=BUY, ordType=LIMIT, state=null, cancelState=null], page=0, size=100, sort=transactTime,desc
-07:54:40.178 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?side=BUY&page=0&sort=transactTime,desc&size=100&ordType=LIMIT
-07:54:40.179 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?side=BUY&page=0&sort=transactTime,desc&size=100&ordType=LIMIT
-07:54:40.194 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
-07:54:40.195 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[{"orderId":"01K6SEQ9E4CN9CJM391XGEYM3K","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":36.83,"orderQty":100.00,"transactTime":"2025-10-05T10:01:00"},{"orderId":"01K6SESF2FRVXTJMFSM9MQ0J83","symbol":"INTC","side":"BUY","state":"UNACK","ordType":"LIMIT","price":33.25,"orderQty":200.00,"transactTime":"2025-10-05T10:01:00"}],"page":{"size":100,"number":0,"totalElements":2,"totalPages":1}}
-07:54:40.196 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=0, pageSize=100, totalElements=2, totalPages=1, contentSize=2}
-07:57:12.032 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - [MCP] searchOrders called with filters=OrderSearchFilters[orderId=null, orderIdLike=null, rootOrderId=null, parentOrderId=null, clOrdId=null, account=null, symbol=null, symbolLike=null, securityId=null, price=null, priceGt=null, priceGte=null, priceLt=null, priceLte=null, priceBetween=null, orderQtyBetween=null, orderQtyGt=null, orderQtyLt=null, cashOrderQtyBetween=null, sendingTimeBetween=2025-10-05T00:00:00Z/2025-10-05T23:59:59Z, transactTimeBetween=null, expireTimeBetween=null, side=null, ordType=null, state=null, cancelState=null], page=1, size=1000, sort=
-07:57:12.032 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Request - URI: /api/query/orders?sendingTime__between=2025-10-05T00:00:00Z/2025-10-05T23:59:59Z&size=1000&page=1
-07:57:12.033 INFO  org.example.spring_ai.oms.LoggingInterceptor - Request: GET http://localhost:8090/api/query/orders?sendingTime__between=2025-10-05T00:00:00Z/2025-10-05T23:59:59Z&size=1000&page=1
-07:57:12.053 INFO  org.example.spring_ai.oms.LoggingInterceptor - Response: 200 OK OK
-07:57:12.054 INFO  org.example.spring_ai.oms.OrderQueryClient - OMS Order Search Response - Body: {"content":[],"page":{"size":50,"number":1,"totalElements":4,"totalPages":1}}
-07:57:12.054 INFO  org.example.spring_ai.oms.OrderSearchMcpTools - Received paged response: PageResponse{pageNumber=1, pageSize=50, totalElements=4, totalPages=1, contentSize=0}
+2025-10-10 17:09:19.367 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2025-10-10 17:09:19.466 [main] INFO  o.e.spring_ai.SpringAiApplication - Starting SpringAiApplication v0.0.1-SNAPSHOT using Java 25 with PID 7388 (C:\data\workspace\spring-ai\mcp-server-lib\build\libs\mcp-server-lib-0.0.1-SNAPSHOT.jar started by tbade in C:\data\workspace\spring-ai\mcp-server-lib)
+2025-10-10 17:09:19.467 [main] DEBUG o.e.spring_ai.SpringAiApplication - Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-10-10 17:09:19.467 [main] INFO  o.e.spring_ai.SpringAiApplication - The following 1 profile is active: "mcp"
+2025-10-10 17:09:21.375 [main] INFO  o.e.spring_ai.docs.DomainDocsTools - [MCP] DomainDocsTools scanning baseDirs=[C:\data\workspace\oms-postgres\specs]
+2025-10-10 17:09:22.314 [main] DEBUG o.e.s.oms.OrderSearchMcpTools - [MCP] OrderSearchMcpTools initialized
+2025-10-10 17:09:22.328 [main] INFO  o.e.s.vector.VectorStoreConfig - [Vector] Configuring Qdrant client: http://localhost:6333
+2025-10-10 17:09:23.111 [main] WARN  io.qdrant.client.QdrantGrpcClient - Qdrant client version 1.13.0 is incompatible with server version 1.15.5. Major versions should match and minor version difference must not exceed 1. Set checkCompatibility=false to skip version check.
+2025-10-10 17:09:23.428 [main] INFO  o.e.s.vector.VectorStoreConfig - [Vector] Configuring Qdrant vector store with collection: domain-docs
+2025-10-10 17:09:23.428 [main] INFO  o.e.s.vector.VectorStoreConfig - [Vector] Using embedding model: OllamaEmbeddingModel
+2025-10-10 17:09:23.658 [main] INFO  o.e.s.vector.DocumentIndexerService - [Vector] DocumentIndexer configured:
+2025-10-10 17:09:23.658 [main] INFO  o.e.s.vector.DocumentIndexerService -   - Base dirs: [C:\data\workspace\oms-postgres\specs]
+2025-10-10 17:09:23.658 [main] INFO  o.e.s.vector.DocumentIndexerService -   - Chunk size: 1000
+2025-10-10 17:09:23.658 [main] INFO  o.e.s.vector.DocumentIndexerService -   - Chunk overlap: 200
+2025-10-10 17:09:23.658 [main] INFO  o.e.s.vector.DocumentIndexerService -   - Auto-index on startup: true
+2025-10-10 17:09:23.660 [main] INFO  o.e.s.vector.SemanticSearchTools - [MCP] SemanticSearchTools initialized with vector store
+2025-10-10 17:09:23.999 [main] INFO  o.s.a.m.s.a.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+2025-10-10 17:09:24.132 [main] INFO  o.s.a.m.s.a.McpServerAutoConfiguration - Registered tools: 10
+2025-10-10 17:09:24.132 [main] INFO  o.s.a.m.s.a.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+2025-10-10 17:09:24.133 [main] INFO  o.s.a.m.s.a.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+2025-10-10 17:09:24.134 [main] INFO  o.s.a.m.s.a.McpServerAutoConfiguration - Enable completions capabilities
+2025-10-10 17:09:24.274 [pool-3-thread-1] INFO  i.m.server.McpAsyncServer - Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=Visual Studio Code, version=1.104.3]
+2025-10-10 17:09:24.277 [pool-3-thread-1] WARN  i.m.server.McpAsyncServer - Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+2025-10-10 17:09:24.629 [main] INFO  o.e.spring_ai.SpringAiApplication - Started SpringAiApplication in 5.803 seconds (process running for 6.689)
+2025-10-10 17:09:24.634 [main] INFO  o.e.s.vector.DocumentIndexerService - [Vector] Auto-indexing enabled, starting document indexing...
+2025-10-10 17:09:24.634 [main] INFO  o.e.s.vector.DocumentIndexerService - [Vector] Starting document indexing...
+2025-10-10 17:09:24.638 [main] INFO  o.e.s.vector.DocumentIndexerService - [Vector] Found 17 documents in C:\data\workspace\oms-postgres\specs
+2025-10-10 17:09:24.638 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\domain-model_spec.md
+2025-10-10 17:09:25.531 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed domain-model_spec.md: 1 chunks
+2025-10-10 17:09:25.531 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\manifesto.md
+2025-10-10 17:09:25.642 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 2 chunks.
+2025-10-10 17:09:25.642 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed manifesto.md: 2 chunks
+2025-10-10 17:09:25.642 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\oms_future_considerations.md
+2025-10-10 17:09:25.742 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 5 chunks.
+2025-10-10 17:09:25.742 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed oms_future_considerations.md: 5 chunks
+2025-10-10 17:09:25.743 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\oms_spec.md
+2025-10-10 17:09:25.832 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 3 chunks.
+2025-10-10 17:09:25.833 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed oms_spec.md: 3 chunks
+2025-10-10 17:09:25.833 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\order_grouping.md
+2025-10-10 17:09:25.946 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 10 chunks.
+2025-10-10 17:09:25.947 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed order_grouping.md: 10 chunks
+2025-10-10 17:09:25.947 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\order_replace.md
+2025-10-10 17:09:26.032 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 11 chunks.
+2025-10-10 17:09:26.033 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed order_replace.md: 11 chunks
+2025-10-10 17:09:26.033 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\order_tree_calculations.md
+2025-10-10 17:09:26.115 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 7 chunks.
+2025-10-10 17:09:26.116 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed order_tree_calculations.md: 7 chunks
+2025-10-10 17:09:26.116 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\skill_profiles.md
+2025-10-10 17:09:26.214 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 3 chunks.
+2025-10-10 17:09:26.214 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed skill_profiles.md: 3 chunks
+2025-10-10 17:09:26.215 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\software-architecture-methodology_spec.md
+2025-10-10 17:09:26.296 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 2 chunks.
+2025-10-10 17:09:26.297 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed software-architecture-methodology_spec.md: 2 chunks
+2025-10-10 17:09:26.297 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\state-query-store_spec.md
+2025-10-10 17:09:26.376 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 3 chunks.
+2025-10-10 17:09:26.377 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed state-query-store_spec.md: 3 chunks
+2025-10-10 17:09:26.377 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\streaming_spec.md
+2025-10-10 17:09:26.454 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 3 chunks.
+2025-10-10 17:09:26.454 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed streaming_spec.md: 3 chunks
+2025-10-10 17:09:26.454 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\task-orchestration-diagrams.md
+2025-10-10 17:09:26.526 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 3 chunks.
+2025-10-10 17:09:26.527 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed task-orchestration-diagrams.md: 3 chunks
+2025-10-10 17:09:26.527 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\task-orchestration-framework_README.md
+2025-10-10 17:09:26.589 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 2 chunks.
+2025-10-10 17:09:26.590 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed task-orchestration-framework_README.md: 2 chunks
+2025-10-10 17:09:26.590 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\task-orchestration-framework_spec.md
+2025-10-10 17:09:26.665 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 5 chunks.
+2025-10-10 17:09:26.666 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed task-orchestration-framework_spec.md: 5 chunks
+2025-10-10 17:09:26.666 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\task-orchestration-INDEX.md
+2025-10-10 17:09:26.750 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 2 chunks.
+2025-10-10 17:09:26.751 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed task-orchestration-INDEX.md: 2 chunks
+2025-10-10 17:09:26.751 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\TASK_ORCHESTRATION_SUMMARY.md
+2025-10-10 17:09:26.824 [main] INFO  o.s.a.t.splitter.TextSplitter - Splitting up document into 3 chunks.
+2025-10-10 17:09:26.824 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed TASK_ORCHESTRATION_SUMMARY.md: 3 chunks
+2025-10-10 17:09:26.824 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexing document: C:\data\workspace\oms-postgres\specs\todo.txt
+2025-10-10 17:09:26.897 [main] DEBUG o.e.s.vector.DocumentIndexerService - [Vector] Indexed todo.txt: 1 chunks
+2025-10-10 17:09:26.898 [main] INFO  o.e.s.vector.DocumentIndexerService - [Vector] Adding 66 chunks from 17 files to vector store...
+2025-10-10 17:09:37.303 [main] INFO  o.e.s.vector.DocumentIndexerService - [Vector] ✅ Successfully indexed 17 documents (66 chunks)
+2025-10-10 17:09:45.805 [boundedElastic-1] INFO  o.e.s.vector.SemanticSearchTools - [MCP] getVectorStoreInfo called
+2025-10-10 17:09:45.866 [boundedElastic-1] INFO  o.e.s.vector.SemanticSearchTools - [MCP] Vector store stats: points=535, vectors=0, segments=8, status=Green
+2025-10-10 17:11:25.744 [boundedElastic-2] INFO  o.e.s.vector.SemanticSearchTools - [MCP] semanticSearchDocs: query='describe the task orchestrator architecture', topK=5, threshold=0.2
+2025-10-10 17:11:25.859 [boundedElastic-2] INFO  o.e.s.vector.SemanticSearchTools - [MCP] semanticSearchDocs returned 5 results
+2025-10-10 17:11:25.859 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Result 1: filename=task-orchestration-framework_README.md, score=0.3023945
+2025-10-10 17:11:25.860 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Result 2: filename=task-orchestration-framework_README.md, score=0.32448435
+2025-10-10 17:11:25.860 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Result 3: filename=task-orchestration-framework_spec.md, score=0.3251503
+2025-10-10 17:11:25.860 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Document score: 0.3023945 for task-orchestration-framework_README.md
+2025-10-10 17:11:25.860 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Document score: 0.32448435 for task-orchestration-framework_README.md
+2025-10-10 17:11:25.860 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Document score: 0.3251503 for task-orchestration-framework_spec.md
+2025-10-10 17:11:25.861 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Document score: 0.3251503 for task-orchestration-framework_spec.md
+2025-10-10 17:11:25.861 [boundedElastic-2] DEBUG o.e.s.vector.SemanticSearchTools - [MCP] Document score: 0.3251503 for task-orchestration-framework_spec.md
+2025-10-10 17:12:28.236 [boundedElastic-2] INFO  o.e.s.vector.SemanticSearchTools - [MCP] getVectorStoreInfo called
+2025-10-10 17:12:28.243 [boundedElastic-2] INFO  o.e.s.vector.SemanticSearchTools - [MCP] Vector store stats: points=535, vectors=0, segments=8, status=Green

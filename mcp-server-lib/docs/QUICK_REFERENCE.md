@@ -44,6 +44,20 @@ Tool: searchDocSections(query="state machine", topK=5)
 Returns: Top 5 matching sections with titles and snippets
 ```
 
+### Semantic Search (Optional - Requires Docker)
+**"Find documents about error handling concepts"**
+```
+Tool: semanticSearchDocs(query="how to handle failures", topK=5, similarityThreshold=0.5)
+Returns: Documents ranked by semantic similarity (not just keywords)
+```
+
+### Check Vector Database Status
+**"Is semantic search available?"**
+```
+Tool: getVectorStoreInfo()
+Returns: Vector DB status, document count, configuration
+```
+
 ---
 
 ## 💡 Common Patterns
@@ -69,6 +83,13 @@ Returns: Top 5 matching sections with titles and snippets
 3. readDocSection → read specific sections of interest
 ```
 
+### Pattern 4: Semantic Discovery (Requires Docker)
+```
+1. semanticSearchDocs(query="conceptual question") → find by meaning
+2. readDomainDoc(path=...) → read top matches
+3. Cross-reference with keyword search if needed
+```
+
 ---
 
 ## 🚀 Example Copilot Queries
@@ -91,6 +112,10 @@ Try these in Copilot Chat:
 @workspace What are the core domain objects according to the specs?
 
 @workspace Search specs for information about state machines
+
+@workspace Use semantic search to find how we handle transaction failures
+
+@workspace Is semantic search enabled? Check vector store status
 ```
 
 ---
@@ -133,6 +158,18 @@ Or via environment variable:
 DOMAIN_DOCS_PATHS="oms/specs,other/docs"
 ```
 
+### Enable Semantic Search (Optional)
+```bash
+# Start Qdrant + Ollama with Docker
+docker-compose up -d
+
+# Index documents
+.\setup-semantic-search.ps1  # Windows
+./setup-semantic-search.sh   # Linux/macOS
+```
+
+See [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md) for details.
+
 ---
 
 ## 🔧 Troubleshooting
@@ -151,6 +188,12 @@ DOMAIN_DOCS_PATHS="oms/specs,other/docs"
 - Section matching is case-insensitive and fuzzy
 - Try just the main words: "Domain Model" instead of "5. Domain Model"
 
+### Semantic Search Not Available
+- Check Docker containers: `docker ps` (should see qdrant & ollama)
+- Run setup script: `.\setup-semantic-search.ps1`
+- Verify with: `getVectorStoreInfo()`
+- See [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md)
+
 ---
 
 ## 📊 Cheat Sheet
@@ -164,6 +207,8 @@ DOMAIN_DOCS_PATHS="oms/specs,other/docs"
 | One section | `readDocSection` | path, sectionTitle |
 | Find documents | `searchDomainDocs` | query, topK |
 | Find sections | `searchDocSections` | query, topK |
+| Semantic search | `semanticSearchDocs` | query, topK, similarityThreshold |
+| Vector DB status | `getVectorStoreInfo` | none |
 
 ---
 
@@ -174,6 +219,27 @@ DOMAIN_DOCS_PATHS="oms/specs,other/docs"
 3. **Read sections** instead of full docs to save tokens
 4. **Use section search** for more precise results than document search
 5. **Fuzzy matching** works for section titles - don't need exact match
+6. **Semantic search** finds by meaning, not just keywords - great for "how do we..." questions
+7. **Check vector store** with `getVectorStoreInfo()` before using semantic search
+
+---
+
+## 🔍 Keyword vs Semantic Search
+
+### Use Keyword Search When:
+- Looking for specific terms: "PostgreSQL", "Kafka", "validation"
+- You know the exact terminology used in docs
+- Fast lookups needed
+
+### Use Semantic Search When:
+- Conceptual questions: "how do we handle errors?"
+- Don't know exact keywords
+- Looking for related concepts
+- Understanding patterns and approaches
+
+**Example:**
+- Keyword: `searchDomainDocs(query="PostgreSQL")` → finds "PostgreSQL" mentions
+- Semantic: `semanticSearchDocs(query="database technology")` → finds PostgreSQL, MySQL, etc.
 
 ---
 

@@ -24,7 +24,7 @@ repositories {
 }
 
 ext {
-	set('springAiVersion', "1.0.2")
+	set('springAiVersion', "1.0.3")
 }
 
 dependencies {
@@ -34,6 +34,16 @@ dependencies {
 	implementation 'org.springframework.ai:spring-ai-starter-mcp-server'
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.7'
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.38'
+	
+	// Vector store and embeddings for semantic search
+	implementation 'org.springframework.ai:spring-ai-starter-vector-store-qdrant'
+	implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
+	
+	// gRPC dependencies for Qdrant client
+	implementation 'io.grpc:grpc-netty-shaded:1.69.0'
+	implementation 'io.grpc:grpc-protobuf:1.69.0'
+	implementation 'io.grpc:grpc-stub:1.69.0'
+	
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'

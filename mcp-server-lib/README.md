@@ -132,30 +132,6 @@ MCP is an open protocol that lets AI assistants (like GitHub Copilot and Claude)
 - Query your data sources
 - Generate code grounded in YOUR domain knowledge
 
-### How This Server Uses MCP
-
-```
-┌─────────────────┐
-│ GitHub Copilot  │
-│   or Claude     │
-└────────┬────────┘
-         │ MCP Protocol (stdio/JSON-RPC)
-         ▼
-┌─────────────────┐
-│  MCP Server     │◄──── This project
-│  (Spring Boot)  │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌───────┐ ┌───────┐
-│  OMS  │ │ Spec  │
-│  API  │ │ Files │
-└───────┘ └───────┘
-```
-
-The MCP server acts as a **bridge** between AI assistants and your domain knowledge.
-
 ---
 
 ## Architecture
@@ -170,33 +146,46 @@ flowchart LR
     subgraph Server["Spring AI MCP Server"]
         direction TB
         AutoConfig["McpServerAutoConfiguration"]
-        Tools["OrderSearchMcpTools"]
-        KnowledgeTools["DomainDocsTools<br/>(Knowledge Server)"]
+        
+        subgraph Tools["MCP Tools (10)"]
+            direction LR
+            KnowledgeTools["DomainDocsTools<br/>(6 keyword tools)"]
+            SemanticTools["SemanticSearchTools<br/>(2 vector tools)"]
+            OrderTools["OrderSearchMcpTools<br/>(1 query tool)"]
+            HealthTools["HealthTools<br/>(1 ping tool)"]
+        end
+        
         QueryClient["OrderQueryClient"]
-        DocsIndex["Spec Document Index<br/>(85.6 KB)"]
+        DocsIndex["Spec Document Index<br/>(9 docs, 85.6 KB)"]
+        VectorStore["Qdrant Vector Store<br/>(optional)"]
         
         AutoConfig -.->|registers| Tools
-        AutoConfig -.->|registers| KnowledgeTools
-        Tools -->|uses| QueryClient
+        OrderTools -->|uses| QueryClient
         KnowledgeTools -->|reads| DocsIndex
+        SemanticTools -.->|searches| VectorStore
+        VectorStore -.->|indexes| DocsIndex
     end
     
     OMS["OMS Backend<br/>(Query API)"]
     Specs["Spec Files<br/>(.md/.txt)"]
+    Docker["Docker Services<br/>(Qdrant + Ollama)"]
     
     Client ==>|stdio JSON-RPC| AutoConfig
     QueryClient ==>|HTTP GET| OMS
     DocsIndex ==>|indexes| Specs
+    VectorStore -.->|requires| Docker
     
     classDef clientStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
     classDef serverStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
     classDef omsStyle fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
     classDef specStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef optionalStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     
     class Client clientStyle
-    class AutoConfig,Tools,KnowledgeTools,QueryClient serverStyle
+    class AutoConfig,Tools,KnowledgeTools,SemanticTools,OrderTools,HealthTools,QueryClient serverStyle
     class OMS omsStyle
     class DocsIndex,Specs specStyle
+    class VectorStore,Docker optionalStyle
 ```
 
 ### Key Classes
@@ -206,76 +195,11 @@ flowchart LR
 | [`SpringAiApplication`](src/main/java/org/example/spring_ai/SpringAiApplication.java) | Main Spring Boot application entry point |
 | [`OrderSearchMcpTools`](src/main/java/org/example/spring_ai/oms/OrderSearchMcpTools.java) | MCP tool provider for OMS order queries |
 | [`DomainDocsTools`](src/main/java/org/example/spring_ai/docs/DomainDocsTools.java) | **Knowledge server** - 6 tools for spec access |
+| [`SemanticSearchTools`](src/main/java/org/example/spring_ai/vector/SemanticSearchTools.java) | **Semantic search** - 2 vector tools (optional) |
 | [`OrderQueryClient`](src/main/java/org/example/spring_ai/oms/OrderQueryClient.java) | REST client for OMS API with response parsing |
 | [`DemoOrderController`](src/main/java/org/example/spring_ai/oms/DemoOrderController.java) | Optional REST endpoint for local testing |
 | [`McpConfig`](src/main/java/org/example/spring_ai/oms/McpConfig.java) | Explicit ToolCallbackProvider bean configuration |
 | [`HealthTools`](src/main/java/org/example/spring_ai/tools/HealthTools.java) | Simple ping/pong tool for connectivity testing |
-
----
-
-## Prerequisites
-- Runs over **stdio** (standard input/output) for seamless integration with MCP clients (e.g., VS Code, Claude Desktop)
-- Exposes **OMS order search** functionality via the `searchOrders` tool
-- Provides **domain knowledge access** through 6 specialized tools for reading and searching OMS specifications
-- Uses **Spring AI's MCP server autoconfiguration** for automatic tool discovery
-- Supports **typed filters, pagination, and sorting** for flexible order queries
-- Provides a **REST client** (`OrderQueryClient`) that handles multiple response formats (Spring Data REST, HAL, plain JSON arrays)
-
-**Key Features:**
-- Zero-boilerplate tool registration using Spring AI `@Tool` annotations
-- **Domain knowledge server** making OMS specs accessible to AI assistants
-- **Section-level navigation** for precise spec access
-- Lombok-based logging with detailed request/response tracing
-- OpenAPI-generated models for type-safe filter definitions
-- Dual-mode operation: MCP server (stdio) and optional REST API demo endpoint
-
----
-
-## Architecture
-
-### Components
-
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#e3f2fd','primaryTextColor':'#1565c0','primaryBorderColor':'#1976d2','lineColor':'#42a5f5','secondaryColor':'#fff3e0','tertiaryColor':'#e8f5e9'}}}%%
-flowchart LR
-    Client["MCP Client"]
-    
-    subgraph Server["Spring AI MCP Server"]
-        direction TB
-        AutoConfig["McpServerAutoConfiguration"]
-        Tools["OrderSearchMcpTools"]
-        QueryClient["OrderQueryClient"]
-        
-        AutoConfig -.->|registers| Tools
-        Tools -->|uses| QueryClient
-    end
-    
-    OMS["OMS Backend"]
-    
-    Client ==>|stdio JSON-RPC| AutoConfig
-    QueryClient ==>|HTTP GET| OMS
-    
-    classDef clientStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
-    classDef serverStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    classDef omsStyle fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
-    
-    class Client clientStyle
-    class AutoConfig,Tools,QueryClient serverStyle
-    class OMS omsStyle
-```
-
-### Key Classes
-
-| Class | Purpose |
-|-------|---------|
-| `SpringAiApplication` | Main Spring Boot application entry point |
-| `OrderSearchMcpTools` | MCP tool provider with `@Tool` annotated methods |
-| `OrderQueryClient` | REST client for OMS API calls with response parsing |
-| `DemoOrderController` | Optional REST endpoint for local testing |
-| `McpConfig` | Explicit ToolCallbackProvider bean configuration |
-| `HealthTools` | Simple ping/pong tool for connectivity testing |
-
----
 
 ---
 
@@ -289,39 +213,19 @@ flowchart LR
 
 ---
 
-## Getting Started
-
-### 🚀 5-Minute Quick Start
-
-1. **Build and start the server:**
-   ```powershell
-   .\run-mcp.ps1  # Windows
-   ./run-mcp.sh   # Linux/Mac
-   ```
-
-2. **Verify in GitHub Copilot:**
-   ```
-   @workspace What MCP tools are available?
-   ```
-   You should see `listDomainDocs`, `readDomainDoc`, `searchDomainDocs`, etc.
-
-3. **Try your first spec query:**
-   ```
-   @workspace List all sections in the OMS specification
-   ```
-
-4. **Generate some code:**
-   ```
-   @workspace Using the OMS spec, explain the Order entity structure
-   ```
-
-**Next:** See the [Quick Start Guide](docs/QUICK_START_GUIDE.md) for more examples.
+- **Java 21** or higher
+- **Gradle 8+** (wrapper included)
+- **PowerShell** (Windows) or **Bash** (Linux/Mac)
+- **OMS Backend** running on `http://localhost:8090` (configurable)
+- **MCP Client** (e.g., VS Code with MCP extension, Claude Desktop)
 
 ---
 
-## Quick Start
+## Getting Started
 
-### 1. Build and Run
+### 🚀 Quick Start (5 Minutes)
+
+#### 1. Build and Run
 
 **Windows (PowerShell):**
 ```powershell
@@ -334,20 +238,38 @@ flowchart LR
 ```
 
 These scripts:
-1. Build the project with `./gradlew bootJar -x test` (skip tests for speed)
-2. Locate the generated JAR in `build/libs/`
-3. Launch with `--mcp.transport=stdio` and `--spring.profiles.active=mcp`
+- Build the project with `./gradlew bootJar -x test` (skip tests for speed)
+- Locate the generated JAR in `build/libs/`
+- Launch with `--mcp.transport=stdio` and `--spring.profiles.active=mcp`
 
-### 2. Verify Connection
+#### 2. Verify Connection
 
 The server will:
 - Start in **stdio mode** (no web server, no console logging to keep stdio clean)
 - Log to `logs/spring-ai.log`
 - Register tools automatically (should see "Registered tools: X" in logs)
 
-### 3. Test with MCP Client
+#### 3. Test with GitHub Copilot
 
-If using **VS Code**, the `.vscode/mcp.json` configuration should auto-connect:
+Try these commands in VS Code:
+
+```
+@workspace What MCP tools are available?
+```
+
+```
+@workspace List all sections in the OMS specification
+```
+
+```
+@workspace Using the OMS spec, explain the Order entity structure
+```
+
+You should see responses using the MCP tools: `listDomainDocs`, `readDomainDoc`, `searchDomainDocs`, etc.
+
+#### 4. VS Code Configuration
+
+If using **VS Code**, create `.vscode/mcp.json` in your workspace:
 
 ```jsonc
 {
@@ -364,6 +286,11 @@ If using **VS Code**, the `.vscode/mcp.json` configuration should auto-connect:
   }
 }
 ```
+
+**Next Steps:**
+- **[Tool Usage Examples](docs/TOOL_USAGE_EXAMPLES.md)** - Copy-paste examples for all 10 tools
+- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Detailed walkthrough
+- **[Copilot Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md)** - 50+ ready-to-use prompts
 
 ---
 
@@ -415,47 +342,73 @@ $env:SPRING_PROFILES_ACTIVE = "mcp"
 
 ## Available Tools
 
-### 1. `searchOrders`
+The MCP server exposes **10 tools** across 4 categories:
 
-Search OMS orders with typed filters, pagination, and sorting.
+### 1. Domain Knowledge Tools (6 tools)
+
+Access your OMS specification documents with keyword-based search.
+
+| Tool | Description | Example Use |
+|------|-------------|-------------|
+| **listDomainDocs** | List all available spec documents | "What specs do we have?" |
+| **readDomainDoc** | Read full document content (with pagination) | "Read the OMS specification" |
+| **searchDomainDocs** | Keyword search across all documents | "Search specs for 'PostgreSQL'" |
+| **listDocSections** | Get document table of contents | "Show sections in OMS spec" |
+| **readDocSection** | Read specific section by title | "Read Domain Model section" |
+| **searchDocSections** | Search within sections for precision | "Find sections about validation" |
+
+**See [Domain Knowledge Server](#domain-knowledge-server) for detailed descriptions.**
+
+---
+
+### 2. Semantic Search Tools (2 tools - Optional)
+
+Vector-based search using AI embeddings. **Requires Docker setup** (see [Semantic Search Setup](#semantic-search-setup)).
+
+| Tool | Description | Example Use |
+|------|-------------|-------------|
+| **semanticSearchDocs** | Find docs by meaning, not keywords | "How do we handle failures?" |
+| **getVectorStoreInfo** | Check vector database status | "Is semantic search enabled?" |
+
+**Benefits:**
+- ✅ Natural language queries
+- ✅ Understands synonyms automatically
+- ✅ Finds related concepts
+
+**Trade-offs:**
+- ⚠️ Requires Docker setup
+- ⚠️ Slower (~200-500ms vs <50ms for keyword search)
+
+---
+
+### 3. OMS Query Tool (1 tool)
+
+Query the OMS backend system.
+
+**`searchOrders` - Search orders with typed filters**
 
 **Tool Signature:**
 ```java
-@Tool(name = "searchOrders", 
-      description = "Search OMS orders with typed filters, pagination and sorting.")
-public OrderSearchResponse searchOrders(
+OrderSearchResponse searchOrders(
     OrderSearchFilters filters,  // Optional typed filters
-    Integer page,                // 0-based page index
+    Integer page,                // 0-based page index (default: 0)
     Integer size,                // Page size (default: 20)
     String sort                  // Sort spec: "field,DESC;field2,ASC"
 )
 ```
 
-**Filter Fields (`OrderSearchFilters`):**
+**Key Filter Fields:**
+- Order identifiers: `orderId`, `orderIdLike`, `clOrdId`
+- Security: `symbol`, `symbolLike`, `securityId`
+- Order details: `side` (BUY/SELL/SELL_SHORT), `ordType` (LIMIT/MARKET/STOP), `state` (NEW/LIVE/FILLED/CXL)
+- Price filters: `price`, `priceGt`, `priceLt`, `priceBetween`
+- Quantity filters: `orderQtyGt`, `orderQtyLt`, `orderQtyBetween`
+- Time ranges: `transactTimeBetween`, `sendingTimeBetween`, `expireTimeBetween`
 
-| Field | Type | Description | Example |
-|-------|------|-------------|---------|
-| `orderId` | String | Exact order ID match | `"01K6PVA884EMR9C4ZC4FTSWKBH"` |
-| `orderIdLike` | String | Order ID pattern match | `"01K6%"` |
-| `symbol` | String | Security symbol | `"INTC"` |
-| `symbolLike` | String | Symbol pattern match | `"INT%"` |
-| `account` | String | Account identifier | `"ACC123"` |
-| `side` | Enum | Order side | `BUY`, `SELL`, `SELL_SHORT` |
-| `ordType` | Enum | Order type | `LIMIT`, `MARKET`, `STOP`, `STOP_LIMIT` |
-| `state` | Enum | Order state | `NEW`, `LIVE`, `FILLED`, `CXL`, `REJ` |
-| `cancelState` | Enum | Cancel state | `CXL`, `PCXL`, `PMOD`, `REJ` |
-| `price` | String | Exact price | `"22.35"` |
-| `priceGt` | String | Price greater than | `"20.00"` |
-| `priceGte` | String | Price ≥ | `"20.00"` |
-| `priceLt` | String | Price less than | `"25.00"` |
-| `priceLte` | String | Price ≤ | `"25.00"` |
-| `priceBetween` | String | Price range | `"20.00,25.00"` |
-| `orderQtyBetween` | String | Quantity range | `"100,500"` |
-| `orderQtyGt` | String | Quantity > | `"100"` |
-| `orderQtyLt` | String | Quantity < | `"1000"` |
-| `transactTimeBetween` | String | Transaction time range | `"2025-10-01T00:00:00,2025-10-31T23:59:59"` |
-| `sendingTimeBetween` | String | Sending time range | `"2025-10-01T00:00:00,2025-10-31T23:59:59"` |
-| `expireTimeBetween` | String | Expiration time range | `"2025-10-01T00:00:00,2025-10-31T23:59:59"` |
+**Example (VS Code Copilot):**
+```
+@workspace Find BUY orders for INTC with price > 20, sorted by time
+```
 
 **Response Format:**
 ```json
@@ -479,54 +432,29 @@ public OrderSearchResponse searchOrders(
 }
 ```
 
-**Example Queries (MCP Client):**
+---
 
-```javascript
-// Search for all BUY orders
-searchOrders({ side: "BUY" }, 0, 20, "transactTime,desc")
+### 4. Health Check Tool (1 tool)
 
-// Search for INTC orders with price > 20
-searchOrders({ 
-  symbol: "INTC", 
-  priceGt: "20.00" 
-}, 0, 20, null)
+**`ping` - Verify MCP server connectivity**
 
-// Search orders in a time range
-searchOrders({
-  transactTimeBetween: "2025-10-01T00:00:00,2025-10-31T23:59:59"
-}, 0, 50, "transactTime,desc")
+Returns `"pong"` to confirm the server is running and tools are registered.
+
+**Example:**
+```
+@workspace Ping the MCP server
 ```
 
-### 2. `ping`
+---
 
-Health check tool to verify MCP server connectivity and tool discovery.
+### Complete Tool Documentation
 
-**Tool Signature:**
-```java
-@Tool(name = "ping", 
-      description = "Health check tool to verify MCP tool discovery.")
-public String ping()
-```
-
-**Response:**
-```
-"pong"
-```
-
-### 3. Domain Knowledge Tools
-
-The server exposes **6 additional tools** for accessing OMS specifications and domain knowledge. These tools enable AI assistants like GitHub Copilot to read and search your documentation.
-
-| Tool | Description |
-|------|-------------|
-| `listDomainDocs` | List all available spec documents with metadata |
-| `readDomainDoc` | Read full document content with pagination support |
-| `searchDomainDocs` | Keyword search across all documents |
-| `listDocSections` | Get document outline (table of contents) |
-| `readDocSection` | Read specific section by title |
-| `searchDocSections` | Search within document sections for precision |
-
-**See [Domain Knowledge Server](#domain-knowledge-server) for details.**
+**📖 [TOOL_USAGE_EXAMPLES.md](docs/TOOL_USAGE_EXAMPLES.md)** - Comprehensive guide with:
+- ✅ Complete tool signatures and parameters
+- ✅ Copy-paste examples for all 10 tools
+- ✅ VS Code Copilot usage examples
+- ✅ Complete workflow examples
+- ✅ Troubleshooting tips
 
 ---
 
@@ -568,16 +496,27 @@ Total indexed: 85.6 KB
 
 #### 2. **MCP Tools Exposure**
 
-The server exposes 6 specialized tools via the Model Context Protocol:
+The server exposes **8 specialized tools** via the Model Context Protocol:
+
+**Keyword-Based Search (Existing):**
 
 | Tool | Purpose | Example Use |
 |------|---------|-------------|
 | **listDomainDocs** | Discover available specs | "What specs do we have?" |
 | **readDomainDoc** | Read full documents | "Show me the manifesto" |
-| **searchDomainDocs** | Find relevant docs | "Which specs mention PostgreSQL?" |
+| **searchDomainDocs** | Find relevant docs by keywords | "Which specs mention PostgreSQL?" |
 | **listDocSections** | Get document outline | "What's in the OMS spec?" |
 | **readDocSection** | Read specific sections | "Read the Domain Model section" |
-| **searchDocSections** | Find specific topics | "Where do specs discuss validation?" |
+| **searchDocSections** | Find specific topics by keywords | "Where do specs discuss validation?" |
+
+**Semantic Search (NEW - Optional):**
+
+| Tool | Purpose | Example Use |
+|------|---------|-------------|
+| **semanticSearchDocs** | Find docs by meaning & context | "How do we handle transaction failures?" |
+| **getVectorStoreInfo** | Vector store status | "Is semantic search available?" |
+
+> **Note:** Semantic search requires Docker, Qdrant, and Ollama. See [Semantic Search Setup](#semantic-search-setup) below.
 
 #### 3. **AI Integration**
 
@@ -748,6 +687,115 @@ Comprehensive guides available in [`docs/`](docs/):
 **Reference:**
 - **[Quick Reference](docs/QUICK_REFERENCE.md)** - MCP tools cheat sheet
 - **[MCP Setup](docs/MCP.md)** - Configuration and troubleshooting
+- **[Architecture Analysis](docs/ARCHITECTURE_ANALYSIS.md)** - RAG comparison & vector DB analysis
+
+**Semantic Search:**
+- **[Semantic Search Setup](README_SEMANTIC_SEARCH.md)** - Vector search with Qdrant & Ollama
+
+---
+
+## Semantic Search Setup
+
+The MCP server supports **optional semantic search** using vector embeddings for meaning-based document retrieval.
+
+### Why Semantic Search?
+
+**Keyword Search (Default):**
+- ✅ Fast (<50ms)
+- ✅ Zero setup
+- ✅ Works well for exact terms
+- ❌ Misses synonyms and related concepts
+
+**Semantic Search (Optional):**
+- ✅ Understands meaning and context
+- ✅ Finds synonyms automatically
+- ✅ Natural language queries work
+- ⚠️ Requires Docker setup (~200-500ms latency)
+
+**Example:**
+```
+Query: "How do we handle transaction failures?"
+
+Keyword Search finds:
+- Documents containing "transaction" AND "failures" (exact match)
+
+Semantic Search finds:
+- Transaction rollback procedures ✅
+- Error recovery mechanisms ✅  
+- Compensation strategies ✅
+- Fault tolerance patterns ✅
+```
+
+### Quick Setup
+
+**Prerequisites:**
+- Docker and Docker Compose installed
+- At least 4GB RAM available
+
+**Step 1: Start Vector Services**
+```powershell
+# Windows PowerShell
+.\setup-semantic-search.ps1
+
+# Linux/macOS
+chmod +x setup-semantic-search.sh
+./setup-semantic-search.sh
+```
+
+This script:
+1. Starts Qdrant vector database (Docker)
+2. Starts Ollama embedding server (Docker)
+3. Downloads the embedding model (~274MB)
+4. Verifies everything is running
+
+**Step 2: Enable in Configuration**
+
+Edit `src/main/resources/application.yml`:
+```yaml
+vector:
+  store:
+    enabled: true  # Enable semantic search
+```
+
+**Step 3: Build and Run**
+```powershell
+.\gradlew.bat clean build
+.\gradlew.bat bootRun
+```
+
+On startup, you'll see:
+```
+[Vector] Auto-indexing enabled, starting document indexing...
+[Vector] Found 9 documents in /home/tbaderts/data/workspace/oms/specs
+[Vector] Adding 127 chunks from 9 files to vector store...
+[Vector] ✅ Successfully indexed 9 documents (127 chunks)
+```
+
+### Using Semantic Search
+
+**From GitHub Copilot:**
+```
+@workspace Use semanticSearchDocs to find information about error handling
+```
+
+**Check Status:**
+```
+@workspace Use getVectorStoreInfo to check if semantic search is available
+```
+
+**For detailed setup, troubleshooting, and usage examples, see [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md)**
+
+---
+- **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** - Try spec-driven development today
+
+**Complete Guides:**
+- **[Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md)** - Complete workflow guide
+- **[Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md)** - 50+ ready-to-use prompts
+- **[Spec-Driven Demo](docs/SPEC_DRIVEN_DEMO.md)** - Real working example
+
+**Reference:**
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - MCP tools cheat sheet
+- **[MCP Setup](docs/MCP.md)** - Configuration and troubleshooting
 
 ---
 
@@ -839,16 +887,16 @@ console.log(result.content);
 ```
 mcp-server-lib/
 ├── docs/                                  # Comprehensive documentation
-│   ├── README.md                          # Documentation index
-│   ├── QUICK_START_GUIDE.md               # 5-minute getting started
+│   ├── QUICK_START_GUIDE.md               # 5-minute getting started ⭐
+│   ├── TOOL_USAGE_EXAMPLES.md             # All 10 tools with copy-paste examples ⭐
 │   ├── COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md  # Complete usage guide
 │   ├── COPILOT_PROMPTS_LIBRARY.md         # 50+ ready-to-use prompts
 │   ├── SPEC_DRIVEN_DEMO.md                # Real working examples
 │   ├── QUICK_REFERENCE.md                 # MCP tools cheat sheet
+│   ├── README_SEMANTIC_SEARCH.md          # Semantic search setup & troubleshooting
 │   ├── MCP.md                             # MCP setup and configuration
 │   ├── SECTION_NAVIGATION_DEMO.md         # Section navigation guide
-│   ├── IMPROVEMENTS_SUMMARY.md            # Technical details
-│   └── INTEGRATION_COMPLETE.md            # Setup summary
+│   └── ARCHITECTURE_ANALYSIS.md           # RAG comparison & vector DB analysis
 ├── src/main/java/org/example/
 │   ├── spring_ai/
 │   │   ├── SpringAiApplication.java       # Main entry point
@@ -1051,14 +1099,16 @@ Comprehensive documentation is available in the [`docs/`](docs/) directory.
 
 #### Getting Started
 - **[Quick Start Guide](docs/QUICK_START_GUIDE.md)** ⭐ - Get started in 5 minutes
-- **[Integration Complete](docs/INTEGRATION_COMPLETE.md)** - Overview of the complete setup
-
-#### Configuration & Setup
-- **[MCP Setup Guide](docs/MCP.md)** - Wire to GitHub Copilot and Claude Desktop
+- **[Tool Usage Examples](docs/TOOL_USAGE_EXAMPLES.md)** ⭐ - Complete examples for all 10 MCP tools
 
 #### Using the Knowledge Server
-- **[Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md)** - Make Copilot use OMS specs
-- **[Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md)** - 50+ copy-paste ready prompts
+- **[Copilot Integration Guide](docs/COPILOT_KNOWLEDGE_INTEGRATION_GUIDE.md)** - Complete workflow guide
+- **[Prompts Library](docs/COPILOT_PROMPTS_LIBRARY.md)** - 50+ ready-to-use prompts
+- **[Spec-Driven Demo](docs/SPEC_DRIVEN_DEMO.md)** - Real working examples
+
+#### Configuration & Setup
+- **[MCP Setup Guide](docs/MCP.md)** - Configure for GitHub Copilot and Claude Desktop
+- **[Semantic Search Setup](docs/README_SEMANTIC_SEARCH.md)** - Vector search with Qdrant & Ollama
 - **[Quick Reference](docs/QUICK_REFERENCE.md)** - MCP tools cheat sheet
 
 #### Examples & Tutorials

@@ -1,215 +1,427 @@
-# MCP Domain Documentation Tools
+# MCP Setup Guide
 
-## What's included
+Complete guide for connecting the Spring AI MCP Server to GitHub Copilot and Claude Desktop.
 
-- MCP tool class: `DomainDocsTools` with:
-	- `listDomainDocs`: lists available domain documents with metadata
-	- `readDomainDoc`: reads full or partial domain documents
-	- `listDocSections`: lists all sections/headings in a document
-	- `readDocSection`: reads a specific section by title
-	- `searchDomainDocs`: keyword search across all domain documents
-	- `searchDocSections`: keyword search within document sections
+---
 
-## Using the tools in chat
+## Table of Contents
 
-### Document Discovery & Reading
+1. [What is MCP?](#what-is-mcp)
+2. [Available Tools](#available-tools)
+3. [GitHub Copilot Setup (VS Code)](#github-copilot-setup-vs-code)
+4. [Claude Desktop Setup](#claude-desktop-setup)
+5. [Configuration](#configuration)
+6. [Using the Tools](#using-the-tools)
+7. [Troubleshooting](#troubleshooting)
 
-- Discover: "list tools"
-- Enumerate docs: "Call `listDomainDocs`"
-- Read full doc: "Call `readDomainDoc` path='specs/oms_spec.md'"
-- Read paged: "Call `readDomainDoc` path='specs/oms_spec.md' offset=0 limit=4000"
+---
 
-### Section Navigation (NEW)
+## What is MCP?
 
-- List sections: "Call `listDocSections` path='specs/oms_spec.md'" 
-  - Returns all headings with their levels and line numbers
-- Read specific section: "Call `readDocSection` path='specs/oms_spec.md' sectionTitle='Domain Model'"
-  - Extracts just that section and its subsections
-- Navigate to subsection: "Read the 'Query API' section from the OMS spec"
+**Model Context Protocol (MCP)** is an open protocol that enables AI assistants (like GitHub Copilot and Claude) to access external tools and data sources.
 
-### Search
+**How it works:**
+- MCP servers expose "tools" via JSON-RPC over stdio (or other transports)
+- AI assistants launch your server, discover available tools, and call them as needed
+- Tools can read files, search data, query APIs, etc.
 
-- Keyword search across all docs: "Use `searchDomainDocs` with query='risk policy' topK=5"
-- Section-level search: "Use `searchDocSections` with query='state machine' topK=5"
-  - Returns matching sections with their titles and context
-  - More precise than full-document search
+**This MCP server provides:**
+- Access to your OMS specification documents
+- Keyword and semantic search across documentation
+- OMS backend query capabilities
+- Health check utilities
 
-### Example Workflows
+---
 
-**Finding specific information:**
-```
-User: "What does the OMS spec say about state machines?"
-Copilot: 
-1. Calls searchDocSections(query='state machine', topK=5)
-2. Finds "State Machine Engine" section in domain-model_spec.md
-3. Calls readDocSection to get full details
-```
+## Available Tools
 
-**Navigating large specifications:**
-```
-User: "Show me all sections in the OMS spec"
-Copilot:
-1. Calls listDocSections(path='specs/oms_spec.md')
-2. Returns outline: "1. Introduction", "2. Goals", "3. Architecture", etc.
+The server exposes **10 MCP tools** across 4 categories:
 
-User: "Read section 5 about the Domain Model"
-Copilot:
-1. Calls readDocSection(path='specs/oms_spec.md', sectionTitle='Domain Model')
-2. Returns just that section
-```
+### Domain Knowledge Tools (6)
+- **`listDomainDocs`** - List all available specification documents with metadata
+- **`readDomainDoc`** - Read full document content (with pagination support)
+- **`searchDomainDocs`** - Keyword search across all documents
+- **`listDocSections`** - Get document table of contents (all headings)
+- **`readDocSection`** - Read specific section by title
+- **`searchDocSections`** - Search within document sections for precision
 
-Clients can ground responses using these tool outputs. `readDomainDoc`: reads a document (supports offset/limit)
-	- `searchDomainDocs`: keyword search across documents
-	- `listDocSections`: lists all sections/headings in a markdown document
-	- `readDocSection`: reads a specific section by title
-	- `searchDocSections`: searches within document sections for precise results
-- Tools are registered alongside existing ones (`searchOrders`, `ping`).
-- Module compiles cleanly and runs as an MCP stdio server.in knowledge available to Copilot and Claude via MCP
+### Semantic Search Tools (2 - Optional)
+- **`semanticSearchDocs`** - Vector-based semantic search (requires Docker setup)
+- **`getVectorStoreInfo`** - Check vector database status
 
-You can expose your domain knowledge (models, specifications, team manifesto, core values, financial domain knowledge, etc.) through an MCP (Model Context Protocol) server so GitHub Copilot (VS Code) and Claude Desktop can discover and use it during chat.
+### OMS Query Tools (1)
+- **`searchOrders`** - Query OMS backend with filters, pagination, sorting
 
-### What’s included
+### Health Check (1)
+- **`ping`** - Verify server connectivity
 
-- MCP tool class: `DomainDocsTools` with:
-	- `listDomainDocs`: lists available domain documents with metadata
-	- `readDomainDoc`: reads a document (supports offset/limit)
-	- `searchDomainDocs`: keyword search across documents
-- Tools are registered alongside existing ones (`searchOrders`, `ping`).
-- Module compiles cleanly and runs as an MCP stdio server.
+**See [TOOL_USAGE_EXAMPLES.md](TOOL_USAGE_EXAMPLES.md) for complete usage examples.**
 
-### Files changed
+---
 
-- `mcp-server-lib/src/main/java/org/example/spring_ai/docs/DomainDocsTools.java` — domain-docs tools
-- `mcp-server-lib/src/main/java/org/example/spring_ai/oms/McpConfig.java` — wires the tools into MCP
+## GitHub Copilot Setup (VS Code)
 
-### Defaults
+### Windows Setup
 
-- Scans for docs under `oms/specs` and `simulator/specs` by default.
-- Override with `domain.docs.paths` (comma-separated), e.g. to add “team manifesto”, “core values”, and “financial knowledge” folders.
-
-## How MCP fits in
-
-- MCP servers speak JSON-RPC over stdio (or other transports) and expose “tools,” “resources,” and “prompts.”
-- Copilot and Claude can launch your server, list tools, and call them to fetch knowledge as needed.
-
-## Wire to GitHub Copilot (VS Code)
-
-Create or update your Copilot MCP config file on Linux:
-
-- `~/.config/github-copilot/mcp.json` (newer clients may also read `~/.copilot/mcp.json`)
-
-Example entry:
+**1. Create `.vscode/mcp.json` in your workspace:**
 
 ```json
 {
-	"mcpServers": {
-		"oms": {
-			"command": "bash",
-			"args": [
-				"-lc",
-				"cd /home/tbaderts/data/workspace/spring-ai && ./run-mcp.sh"
-			],
-			"env": {
-				"JAVA_TOOL_OPTIONS": "-Xmx512m",
-				"MCP_TRANSPORT": "stdio"
-			},
-			"description": "Spring AI MCP server exposing domain docs and OMS tools"
-		}
-	}
+  "servers": {
+    "oms-mcp-server": {
+      "type": "stdio",
+      "command": "powershell.exe",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}\\run-mcp.ps1"
+      ],
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "mcp",
+        "MCP_TRANSPORT": "stdio"
+      },
+      "description": "Spring AI MCP server with OMS specs and query tools"
+    }
+  }
 }
 ```
 
-Optional: Configure which doc folders to scan by adding an environment variable for the server:
+**2. Reload VS Code window**
+- Press `F1` or `Ctrl+Shift+P`
+- Type "Developer: Reload Window"
+- Or restart VS Code
+
+**3. Verify Connection**
+
+In GitHub Copilot Chat:
+```
+@workspace What MCP tools are available?
+```
+
+You should see all 10 tools: `listDomainDocs`, `readDomainDoc`, `searchDomainDocs`, `listDocSections`, `readDocSection`, `searchDocSections`, `semanticSearchDocs`, `getVectorStoreInfo`, `searchOrders`, `ping`
+
+### Linux/macOS Setup
+
+**1. Create `~/.config/github-copilot/mcp.json`:**
+
+```json
+{
+  "mcpServers": {
+    "oms-mcp-server": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "cd /path/to/mcp-server-lib && ./run-mcp.sh"
+      ],
+      "env": {
+        "JAVA_TOOL_OPTIONS": "-Xmx512m",
+        "MCP_TRANSPORT": "stdio",
+        "SPRING_PROFILES_ACTIVE": "mcp"
+      },
+      "description": "Spring AI MCP server with OMS specs and query tools"
+    }
+  }
+}
+```
+
+**Note:** Update `/path/to/mcp-server-lib` to your actual path.
+
+**2. Reload VS Code** and verify as above.
+
+---
+
+## Claude Desktop Setup
+
+### Windows Setup
+
+**1. Locate Claude Desktop config:**
+- `%APPDATA%\Claude\claude_desktop_config.json`
+- Or: `C:\Users\<YourName>\AppData\Roaming\Claude\claude_desktop_config.json`
+
+**2. Add MCP server configuration:**
+
+```json
+{
+  "mcpServers": {
+    "oms-mcp-server": {
+      "command": "powershell.exe",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", "C:\\path\\to\\mcp-server-lib\\run-mcp.ps1"
+      ],
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "mcp",
+        "MCP_TRANSPORT": "stdio"
+      }
+    }
+  }
+}
+```
+
+**Note:** Use full absolute path and double backslashes (`\\`) in Windows paths.
+
+### Linux/macOS Setup
+
+**1. Create `~/.config/Claude/claude_desktop_config.json`:**
+
+```json
+{
+  "mcpServers": {
+    "oms-mcp-server": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "cd /path/to/mcp-server-lib && ./run-mcp.sh"
+      ],
+      "env": {
+        "JAVA_TOOL_OPTIONS": "-Xmx512m",
+        "MCP_TRANSPORT": "stdio",
+        "SPRING_PROFILES_ACTIVE": "mcp"
+      }
+    }
+  }
+}
+```
+
+**2. Restart Claude Desktop**
+
+**3. Verify in Claude:**
+- Open a new chat
+- "List available MCP tools"
+- You should see all 10 tools
+
+---
+
+## Configuration
+
+### Document Paths
+
+**Default:** The server scans `oms/specs` by default (configured in `application.yml`)
+
+**To add more directories:**
+
+**Option 1: Environment Variable**
 
 ```json
 "env": {
-	"JAVA_TOOL_OPTIONS": "-Xmx512m",
-	"MCP_TRANSPORT": "stdio",
-	"DOMAIN_DOCS_PATHS": "oms/specs,simulator/specs,/abs/path/core-values,/abs/path/financial"
+  "SPRING_PROFILES_ACTIVE": "mcp",
+  "MCP_TRANSPORT": "stdio",
+  "DOMAIN_DOCS_PATHS": "C:/data/oms/specs,C:/data/team-docs,C:/data/manifesto"
 }
 ```
 
-Notes:
-
-- `DOMAIN_DOCS_PATHS` maps to Spring property `domain.docs.paths`.
-- Reload the VS Code window. In Copilot Chat, ask “list tools” and you should see `listDomainDocs`, `readDomainDoc`, `searchDomainDocs`, `searchOrders`, `ping`.
-
-## Wire to Claude Desktop
-
-Create a JSON file on Linux at: `~/.config/Claude/mcp/oms.json`
-
-```json
-{
-	"name": "oms",
-	"command": "bash",
-	"args": [
-		"-lc",
-		"cd /home/tbaderts/data/workspace/spring-ai && ./run-mcp.sh"
-	],
-	"env": {
-		"JAVA_TOOL_OPTIONS": "-Xmx512m",
-		"MCP_TRANSPORT": "stdio",
-		"DOMAIN_DOCS_PATHS": "oms/specs,simulator/specs"
-	}
-}
-```
-
-Restart Claude Desktop. In a new chat:
-
-- “List available MCP tools”
-- “Search domain docs for ‘core values’ and show the top 3”
-- “Read the team manifesto doc”
-
-Tip: Depending on your Claude Desktop version, the config directory/schema may vary slightly; the above is the common stdio pattern. Some builds allow enabling MCP servers via Settings.
-
-## Organize your domain knowledge
-
-- Use text-friendly formats: `.md`, `.markdown`, `.txt`, `.adoc`
-- Default scan paths: `oms/specs`, `simulator/specs`
-- To add more folders, set the property (env var shown below):
-
-```json
-"DOMAIN_DOCS_PATHS": "/abs/path/manifesto,/abs/path/core-values,/abs/path/financial"
-```
-
-Or in `application.yml`:
+**Option 2: application.yml**
 
 ```yaml
 domain:
-	docs:
-		paths: "oms/specs,simulator/specs,/abs/path/extra"
+  docs:
+    paths: "C:/data/oms/specs,C:/data/team-docs,C:/data/manifesto"
 ```
 
-The tools return normalized relative `path` values that you can pass to `readDomainDoc`.
+**Supported formats:** `.md`, `.markdown`, `.txt`, `.adoc`
 
-## Using the tools in chat
+### Memory Configuration
 
-- Discover: “list tools”
-- Enumerate docs: “Call `listDomainDocs`”
-- Search: “Use `searchDomainDocs` with query='risk policy' topK=5”
-- Read: “Call `readDomainDoc` path='oms/specs/manifesto.md'”
-- Read paged: “Call `readDomainDoc` path='simulator/specs/financial_overview.md' offset=0 limit=4000”
+For large document sets, increase JVM memory:
 
-Clients can ground responses using these tool outputs.
+```json
+"env": {
+  "JAVA_TOOL_OPTIONS": "-Xmx1024m",
+  "SPRING_PROFILES_ACTIVE": "mcp"
+}
+```
 
-## Optional enhancements
+### Semantic Search (Optional)
 
-- MCP resources: expose each doc as a resource to browse via resource catalogs.
-- Semantic search: add embeddings + local vector store (e.g., Lucene/ES/sqlite+FAISS) for better retrieval.
-- Prompts: publish standardized prompts (e.g., team voice/values) via MCP prompts capability.
-- Access control: filter sensitive docs or use profiles via properties.
+To enable semantic search tools, see [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md) for Docker setup.
 
-## Quality check
+---
 
-- Build: PASS (compiled `mcp-server-lib` successfully, skipping tests)
-- Lint/type: no Java errors; generated-code warnings are unrelated to the new tools
-- Smoke: MCP auto-configuration is present; tools are registered by `McpConfig`
+## Using the Tools
 
-## Requirements coverage
+### Discovery
 
-- Make domain knowledge available via MCP to Copilot and Claude: Done
-- Include models/specifications/manifesto/core values/financial knowledge: Done via file-based ingestion; configurable via `domain.docs.paths`
-- Concrete config examples for Copilot and Claude: Done
-- Ready-to-use usage examples: Done
+```
+@workspace What MCP tools are available?
+@workspace List all domain documentation files
+```
 
-If you’d like, we can also expose docs as MCP resources and add basic semantic search for higher-quality retrieval.
+### Reading Documents
+
+```
+@workspace Read the OMS specification
+@workspace Show me the table of contents for specs/oms_spec.md
+@workspace Read the "Domain Model" section from the OMS spec
+```
+
+### Searching
+
+**Keyword Search:**
+```
+@workspace Search specs for "state machine"
+@workspace Which documents mention "PostgreSQL"?
+@workspace Find sections about "validation rules"
+```
+
+**Semantic Search (if enabled):**
+```
+@workspace Use semantic search to find information about error handling
+@workspace How do we handle transaction failures? (semantic search)
+```
+
+### Querying OMS
+
+```
+@workspace Find all BUY orders for symbol INTC
+@workspace Search for orders with price > 20 in the last week
+```
+
+### Complete Examples
+
+See [TOOL_USAGE_EXAMPLES.md](TOOL_USAGE_EXAMPLES.md) for comprehensive usage examples with all 10 tools.
+
+---
+
+## Troubleshooting
+
+### Tools Not Showing Up
+
+**Check MCP config:**
+- Windows: `.vscode/mcp.json` in workspace root
+- Linux/macOS: `~/.config/github-copilot/mcp.json`
+
+**Verify server starts:**
+```powershell
+# Windows
+.\run-mcp.ps1
+
+# Linux/macOS
+./run-mcp.sh
+```
+
+You should see:
+```
+Starting Spring AI MCP Server...
+MCP Transport: stdio
+```
+
+### Connection Errors
+
+**Check Java version:**
+```powershell
+java -version
+```
+Must be Java 21+
+
+**Check Gradle:**
+```powershell
+.\gradlew --version
+```
+
+**Rebuild:**
+```powershell
+.\gradlew clean build -x test
+```
+
+### Tool Not Found Errors
+
+**Verify tool registration:**
+
+In Copilot Chat:
+```
+@workspace ping the MCP server
+```
+
+If `ping` works but other tools don't, check `application.yml` for disabled tools.
+
+### Memory Issues
+
+**Symptoms:** Server crashes, "OutOfMemoryError"
+
+**Solution:** Increase JVM memory in config:
+
+```json
+"env": {
+  "JAVA_TOOL_OPTIONS": "-Xmx1024m"
+}
+```
+
+### Path Issues (Windows)
+
+**Symptoms:** "File not found", "Cannot find path"
+
+**Solution:** Use double backslashes in JSON:
+
+```json
+"args": ["C:\\path\\to\\run-mcp.ps1"]
+```
+
+Or use forward slashes:
+```json
+"args": ["C:/path/to/run-mcp.ps1"]
+```
+
+### Semantic Search Not Working
+
+**Symptoms:** `semanticSearchDocs` tool not available
+
+**Cause:** Docker containers not running
+
+**Solution:** See [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md) for setup:
+
+```powershell
+docker-compose up -d
+.\setup-semantic-search.ps1
+```
+
+### Document Not Found
+
+**Symptoms:** "Document not found: specs/my_spec.md"
+
+**Check:**
+1. File exists in specified path
+2. Path is relative to `domain.docs.paths` configured directories
+3. File extension is supported (.md, .markdown, .txt, .adoc)
+
+**Debug:**
+```
+@workspace List all domain docs
+```
+
+Should show all indexed documents with their paths.
+
+### Logs
+
+**View server logs:**
+
+```powershell
+Get-Content logs/spring-ai.log -Tail 50
+```
+
+**Enable debug logging:**
+
+In `src/main/resources/application.yml`:
+```yaml
+logging:
+  level:
+    org.example.spring_ai: DEBUG
+```
+
+---
+
+## Next Steps
+
+1. **Explore Tools** - Try all 10 tools with [TOOL_USAGE_EXAMPLES.md](TOOL_USAGE_EXAMPLES.md)
+2. **Add Your Docs** - Configure `DOMAIN_DOCS_PATHS` to include your specifications
+3. **Enable Semantic Search** - Follow [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md)
+4. **Query OMS** - Use `searchOrders` to explore backend data
+5. **Share Setup** - Export your config for team members
+
+---
+
+## Resources
+
+- [Main README](../README.md) - Project overview
+- [TOOL_USAGE_EXAMPLES.md](TOOL_USAGE_EXAMPLES.md) - Complete usage guide
+- [README_SEMANTIC_SEARCH.md](README_SEMANTIC_SEARCH.md) - Vector search setup
+- [QUICK_START_GUIDE.md](QUICK_START_GUIDE.md) - 5-minute quickstart
+- [MCP Specification](https://spec.modelcontextprotocol.io/) - Official MCP docs

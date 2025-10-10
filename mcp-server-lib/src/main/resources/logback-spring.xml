@@ -17,26 +17,30 @@
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- Local profile uses console logging for development -->
+    <!-- Reduce noise from some verbose libraries -->
+    <logger name="io.grpc" level="WARN"/>
+    <logger name="io.netty" level="WARN"/>
+
+    <!-- Local profile uses BOTH console and file logging for development -->
     <springProfile name="local">
+        <logger name="org.springframework.ai.mcp" level="DEBUG"/>
+        <logger name="org.example" level="DEBUG"/>
+        
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="mcp">
-        <!-- Only file logging; adjust level if further noise reduction desired -->
-        <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>
     </springProfile>
 
-    <!-- Fallback profile also avoids console output -->
-    <springProfile name="default">
+    <!-- MCP and default profiles use ONLY file logging to keep stdout clean -->
+    <springProfile name="mcp,default">
+        <logger name="org.springframework.ai.mcp" level="DEBUG"/>
+        <logger name="org.example" level="DEBUG"/>
+        
         <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>

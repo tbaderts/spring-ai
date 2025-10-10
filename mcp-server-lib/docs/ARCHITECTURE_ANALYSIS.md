@@ -43,24 +43,26 @@ The MCP Knowledge Server is a **Spring Boot application** that implements a **si
 
 ### Architecture Overview
 
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#e3f2fd','primaryTextColor':'#1565c0','primaryBorderColor':'#1976d2','lineColor':'#42a5f5','secondaryColor':'#fff3e0','tertiaryColor':'#e8f5e9'}}}%%
+flowchart TB
+    Client["🤖 GitHub Copilot<br/>or Claude"]
+    Server["MCP Server<br/>(Spring Boot)"]
+    Specs["📄 Spec Files<br/>(85.6 KB)"]
+    
+    Client ==>|"MCP Protocol<br/>(stdio/JSON-RPC)"| Server
+    Server ==>|"indexes & searches"| Specs
+    
+    classDef clientStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000
+    classDef serverStyle fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000
+    classDef dataStyle fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+    
+    class Client clientStyle
+    class Server serverStyle
+    class Specs dataStyle
 ```
-┌─────────────────┐
-│ GitHub Copilot  │
-│   or Claude     │
-└────────┬────────┘
-         │ MCP Protocol (stdio/JSON-RPC)
-         ▼
-┌─────────────────┐
-│  MCP Server     │ ← Spring Boot application
-│  (Spring Boot)  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Spec Files     │ ← Your .md/.txt documentation
-│  (85.6 KB)      │
-└─────────────────┘
-```
+
+**Key:** Spring Boot application indexes your markdown/text documentation files
 
 ### Three-Phase Operation
 
